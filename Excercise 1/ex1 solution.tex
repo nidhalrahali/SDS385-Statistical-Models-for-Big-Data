@@ -1,0 +1,30 @@
+\documentclass{article}
+\usepackage{enumerate}
+\begin{document}
+\begin{enumerate}
+\item
+\begin{enumerate}[A]
+\item
+\begin{eqnarray}
+f(\beta)&=&(y-X\beta)^TW(y-X\beta)\nonumber\\
+&=&\beta^TX^TWX\beta-2y^TWX\beta+\cdots\nonumber\\
+&=&\beta^T X^TWX\beta-2y^TW^TX^T(X^TWX)^{-1}X^TWX\beta+\cdots\nonumber\\
+&=&(\beta-(X^TWX)^{-1}X^TWy)^TX^TWX(\beta-(X^TWX)^{-1}X^TWy)+\cdots
+\end{eqnarray}
+\end{enumerate}
+\item
+\begin{enumerate}[A]
+\item
+\begin{eqnarray}
+l(\beta)&=&-\log(\prod_i(y_i\omega_i(\beta)+(1-y_i)(1-\omega_i(\beta))))\nonumber\\
+&=&-\sum_i\log((2y_i-1)\omega_i(\beta)+(1-y_i))
+\end{eqnarray}
+\[
+\frac{\partial\omega_i}{\partial\beta_j}=\frac{x_{ij}\exp(-x_i\beta)}{(1+\exp(-x_i\beta))^2}=x_{ij}\omega_i(1-\omega_i)
+\]
+\[
+\frac{\partial l}{\partial\beta_j}=\sum_i\frac{x_{ij}\omega_i(1-\omega_i)(2y_i-1)}{(2y_i-1)\omega_i(\beta)+(1-y_i)}
+\]
+\end{enumerate}
+\end{enumerate}
+\end{document}
