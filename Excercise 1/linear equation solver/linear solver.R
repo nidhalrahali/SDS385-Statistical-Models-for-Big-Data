@@ -1,15 +1,13 @@
 library(Matrix)
-linearsolve1=function(y,X,W){
+linearsolve1=function(y,X){
   m=X
-  for(i in 1:nrow(m))m[i,]=m[i,]*W[i,1]
   m=crossprod(X,m)
   b=crossprod(X,y)
   return=solve(m)%*%b
 }
 
-linearsolve2=function(y,X,W){
+linearsolve2=function(y,X){
   m=X
-  for(i in 1:nrow(m))m[i,]=m[i,]*W[i,1]
   m=crossprod(X,m)
   b=crossprod(X,y)
   lufact=expand(lu(m))
@@ -30,4 +28,11 @@ linearsolve2=function(y,X,W){
     b[i]=b[i]/u[i,i]
   }
   return=b
+}
+
+linearsolves=function(y,X){
+  m=as(X,"sparseMatrix")
+  m=crossprod(m,m)
+  b=crossprod(X,y)
+  return=solve(m,b)
 }
