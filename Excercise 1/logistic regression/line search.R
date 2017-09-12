@@ -24,7 +24,7 @@ newtondirection=function(omega,y,X){
     XW[i,]=XW[i,]*w[i]
   }
   g=grad(omega,y,X)
-  return=-solve(crossprod(X,XW))%*%g
+  return=as.vector(-solve(crossprod(X,XW))%*%g)
 }
 
 newtonmethod=function(X,y,beta0,ite){
