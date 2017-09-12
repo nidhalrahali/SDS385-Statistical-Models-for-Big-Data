@@ -1,6 +1,6 @@
 library(readr)
 data <- read_csv("~/GitHub/SDS385-course-work/Excercise 1/logistic regression/wdbc.csv",col_names = FALSE)
-source('~/GitHub/SDS385-course-work/Excercise 1/logistic regression/gradient decent.R')
+source('~/GitHub/SDS385-course-work/Excercise 1/logistic regression/line search.R')
 X=as.matrix(data[3:12])
 for(i in 1:ncol(X)){
   X[,i]=(X[,i]-mean(X[,i]))/sqrt(var(X[,i]))
@@ -17,3 +17,6 @@ eps=0.0001
 result=gradientdecent(X,y,beta0,eps,ite)
 plot(result$negloglikelihood)
 result$beta
+result=newtonmethod(X,y,beta0,ite)
+result$beta
+plot(result$negloglikelihood)
