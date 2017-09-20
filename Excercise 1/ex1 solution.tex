@@ -40,9 +40,9 @@ Compute second order derivative:
 
 $l$ can be written as a quadratic form of diagonal matrix $W$ whose diagonal entries are $\omega_i(1-\omega_i)$
 \begin{eqnarray}
-l(\beta)&=&l(\beta_0)+\sum_j\frac{\partial l(\beta_0)}{\partial\beta_j}\beta_j+\frac{1}{2}\sum_{jk}x_{ij}x_{ik}f_i(\beta_0)\beta_j\beta_k+\cdots\nonumber\\
-&=&\frac{1}{2}\beta^TX^TWX\beta+\sum_j\frac{\partial l(\beta_0)}{\partial\beta_j}\beta_j+\cdots\nonumber\\
-&=&\frac{1}{2}(z-X\beta)^TW(z-X\beta)+\cdots
+l(\beta)&=&l(\beta_0)+\sum_j\frac{\partial l(\beta_0)}{\partial\beta_j}\Delta\beta_j+\frac{1}{2}\sum_{jk}x_{ij}x_{ik}f_i(\beta_0)\Delta\beta_j\Delta\beta_k+\cdots\nonumber\\
+&=&\frac{1}{2}\Delta\beta^TX^TWX\Delta\beta+\sum_j\frac{\partial l(\beta_0)}{\partial\beta_j}\Delta\beta_j+\cdots\nonumber\\
+&=&\frac{1}{2}(z-X\Delta\beta)^TW(z-X\Delta\beta)+\cdots
 \end{eqnarray}
 Determine $z$:
 \begin{eqnarray}
