@@ -28,12 +28,8 @@ gradientdecent=function(X,y,beta0,eps,ite){
 
 newtondirection=function(omega,y,X){
   w=omega*(1-omega)
-  WX=X
-  for(i in 1:ncol(X)){
-    WX[,i]=WX[,i]*w
-  }
   g=grad(omega,y,X)
-  return=as.vector(-solve(crossprod(X,WX))%*%g)
+  return=as.vector(-solve(crossprod(X,X*w),g))
 }
 
 newtonmethod=function(X,y,beta0,ite){

@@ -33,13 +33,21 @@ stochasticgradientdecent=function(X,y,testX,testy,beta0,eps,ite,alpha){
   return=list(beta=beta,negloglikelihood=nllh,testnegloglikelihoood=tnllh,averagenegloglikelihood=nllhaverage)
 }
 
-gradientdecent=function(X,y,beta0,eps,ite){
+varyingstepsgradientdecent=function(X,y,testX,testy,beta0,ite,alpha,decay,t0,C){
   beta=beta0
   nllh=as.vector(matrix(nrow=ite))
+  tnllh=as.vector(matrix(nrow=ite))
+  nllhaverage=as.vector(matrix(nrow=ite))
   for(i in 1:ite){
+    r=sample(length(y),1)
     og=omega(X,beta)
-    nllh[i]=nllh(og,y)
-    beta=beta-eps*grad(og,y,X)
+    testog=omega(testX,beta)
+    nllh[i]=nllh(og,y)/length(y)
+    tnllh[i]=nllh(testog,testy)/length(testy)
+    eps=C/((t0+i)^decay)
+    beta=beta-eps*grad(og[r],y[r],X[r,])
+    if(i==1)nllhaverage[i]=nllh(og[r],y[r])
+    else nllhaverage[i]=nllh(og[r],y[r])*alpha+nllhaverage[i-1]*(1-alpha)
   }
-  return=list(beta=beta,negloglikelihood=nllh)
+  return=list(beta=beta,negloglikelihood=nllh,testnegloglikelihoood=tnllh,averagenegloglikelihood=nllhaverage)
 }
