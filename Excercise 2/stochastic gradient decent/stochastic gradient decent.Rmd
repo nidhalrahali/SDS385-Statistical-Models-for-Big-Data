@@ -36,10 +36,12 @@ alpha=0.05
 ```
 we use moving average with exponential decay to compute "averagenegloglikelihood": averageX(t)=X(t)*alpha+averageX(t-1)*(1-alpha)
 
+black line is the moving average of loglikelihood computed using exponential decay:averageX(t)=X(t)*alpha+averageX(t-1)*(1-alpha), red is the negative loglikelihood per data point on the test data
 ```{r}
 eps=0.001
 result=stochasticgradientdecent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
 plot(result$averagenegloglikelihood,type='l',xlab='',ylab='negative loglikelihood',sub='eps=0.001')
+lines(result$testnegloglikelihoood,col='red')
 ```
 
 ```{r}
