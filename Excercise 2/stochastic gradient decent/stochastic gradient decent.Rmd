@@ -2,12 +2,14 @@
 title: "Stochastic gradient decent"
 author: "Yinan Zhu"
 date: "September 27, 2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r}
 library(readr)
-data <- read_csv("~/GitHub/SDS385-course-work/Excercise 1/logistic regression/wdbc.csv",col_names = FALSE)
+data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2/stochastic logistic regression/wdbc.csv",col_names = FALSE)
 source('~/GitHub/SDS385-course-work/Excercise 2/stochastic logistic regression/gradient decent functions.R')
 ```
 ```{r}
