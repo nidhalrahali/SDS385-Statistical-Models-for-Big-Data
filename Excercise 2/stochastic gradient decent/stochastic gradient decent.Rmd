@@ -9,8 +9,8 @@ output:
 
 ```{r}
 library(readr)
-data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2/stochastic logistic regression/wdbc.csv",col_names = FALSE)
-source('~/GitHub/SDS385-course-work/Excercise 2/stochastic logistic regression/gradient decent functions.R')
+data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/wdbc.csv",col_names = FALSE)
+source('~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/gradient decent functions.R')
 ```
 ```{r}
 X=as.matrix(data[3:12])
@@ -28,10 +28,13 @@ trainy=y[1:250]
 testX=X[251:569,]
 testy=y[251:569]
 ```
+
+
 ```{r}
 ite=1000
 alpha=0.05
 ```
+we use moving average with exponential decay to compute "averagenegloglikelihood": averageX(t)=X(t)*alpha+averageX(t-1)*(1-alpha)
 
 ```{r}
 eps=0.001
@@ -58,6 +61,8 @@ plot(result$averagenegloglikelihood,type='l',xlab='',ylab='negative loglikelihoo
 lines(result$testnegloglikelihoood,col='red')
 ```
 
+
+varying steps, we use the Robbins-Monro rule where (step size at t)=C/(t+t0)^decay
 ```{r}
 t0=1
 C=0.5

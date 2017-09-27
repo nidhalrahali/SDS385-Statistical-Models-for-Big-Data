@@ -15,15 +15,18 @@ nllh=function(omega,y){
   return=r
 }
 
-gradientdecent=function(X,y,beta0,eps,ite){
+gradientdecent=function(X,y,testX,testy,beta0,eps,ite){
   beta=beta0
   nllh=as.vector(matrix(nrow=ite))
+  tnllh=as.vector(matrix(nrow=ite))
   for(i in 1:ite){
     og=omega(X,beta)
-    nllh[i]=nllh(og,y)
+    testog=omega(testX,beta)
+    nllh[i]=nllh(og,y)/length(y)
+    tnllh[i]=nllh(testog,testy)/length(testy)
     beta=beta-eps*grad(og,y,X)
   }
-  return=list(beta=beta,negloglikelihood=nllh)
+  return=list(beta=beta,negloglikelihood=nllh,testnegloglikelihood=tnllh)
 }
 
 newtondirection=function(omega,y,X){
@@ -32,13 +35,16 @@ newtondirection=function(omega,y,X){
   return=as.vector(-solve(crossprod(X,X*w),g))
 }
 
-newtonmethod=function(X,y,beta0,ite){
+newtonmethod=function(X,y,testX,testy,beta0,ite){
   beta=beta0
   nllh=as.vector(matrix(nrow=ite))
+  tnllh=as.vector(matrix(nrow=ite))
   for(i in 1:ite){
     og=omega(X,beta)
-    nllh[i]=nllh(og,y)
+    testog=omega(testX,beta)
+    nllh[i]=nllh(og,y)/length(y)
+    tnllh[i]=nllh(testog,testy)/length(testy)
     beta=beta+newtondirection(og,y,X)
   }
-  return=list(beta=beta,negloglikelihood=nllh)
+  return=list(beta=beta,negloglikelihood=nllh,testnegloglikelihood=tnllh)
 }
