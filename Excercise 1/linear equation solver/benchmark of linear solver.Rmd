@@ -1,0 +1,97 @@
+---
+title: "benchmark of linear solver"
+author: "Yinan Zhu"
+date: "September 28, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+```{r}
+library(microbenchmark)
+source('~/GitHub/SDS385-course-work/Excercise 1/linear equation solver/linear solver.R')
+```
+First, consider two solvers, of which "linearsolver" use inverse matrix and "linearsolverlu" use LU decomposition, we should check that they give the correct result, using data generated from a linear model with gaussian noise
+
+```{r}
+n=3000
+p=20
+beta=matrix(1,nrow=p,ncol=1)
+X=matrix(runif(n*p,0,1),nrow=n,ncol=p)
+y=X%*%beta+rnorm(n,sd=1)
+```
+```{r}
+print(linearsolve(y,X))
+```
+```{r}
+print(linearsolvelu(y,X))
+```
+
+Now we fix n, the number of points to be constant, and varies p, the number of features. Test the time it takes to solve
+
+```{r}
+t=as.vector(rep(0,10))
+tlu=t
+for(i in 1:10){
+p=200*i
+beta=matrix(1,nrow=p,ncol=1)
+X=matrix(runif(n*p,0,1),nrow=n,ncol=p)
+y=X%*%beta+rnorm(n,sd=1)
+
+l=microbenchmark(linearsolve(y,X),times=1L)
+t[i]=l$time/1000000000
+l=microbenchmark(linearsolvelu(y,X),times=1L)
+tlu[i]=l$time/1000000000
+}
+```
+```{r}
+plot(t~seq(from=200,to=2000,by=200),xlab='p')
+points(tlu~seq(from=200,to=2000,by=200),col='red')
+```
+
+Now we add "linearsolvesparse" which use the sparse matrix class
+
+```{r}
+p=20
+mask=matrix(rbinom(n*p,1,0.05),nrow=n,ncol=p)
+X=matrix(runif(n*p,0,1),nrow=n,ncol=p)
+beta=matrix(1,nrow=p,ncol=1)
+Xsparse=X*mask
+y=Xsparse%*%beta+rnorm(n,sd=10)
+```
+```{r}
+print(linearsolve(y,Xsparse))
+```
+```{r}
+print(linearsolvelu(y,Xsparse))
+```
+```{r}
+print(linearsolvesparse(y,Xsparse))
+```
+
+To benchmark the performance, we keep the size of equation constant and varies the density of observed data
+
+```{r}
+t=as.vector(rep(0,6))
+tlu=t
+ts=t
+p=1600
+X=matrix(runif(n*p,0,1),nrow=n,ncol=p)
+beta=matrix(1,nrow=p,ncol=1)
+for(i in 1:6){
+  mask=matrix(rbinom(n*p,1,0.1*i),nrow=n,ncol=p)
+  Xsparse=X*mask
+  y=Xsparse%*%beta+rnorm(n,sd=10)
+  l=microbenchmark(linearsolve(y,Xsparse),times=1L)
+  t[i]=l$time/1000000000
+  l=microbenchmark(linearsolvelu(y,Xsparse),times=1L)
+  tlu[i]=l$time/1000000000
+  l=microbenchmark(linearsolvesparse(y,Xsparse),times=1L)
+  ts[i]=l$time/1000000000
+}
+```
+```{r}
+plot(t~seq(from=0.1,to=0.6,by=0.1),ylim=c(0,15),xlab='density')
+points(tlu~seq(from=0.1,to=0.6,by=0.1),col='red')
+points(ts~seq(from=0.1,to=0.6,by=0.1),col='blue')
+```
+
