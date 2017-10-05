@@ -6,7 +6,7 @@ backtrack=function(X,y,beta,og,direction,eps0,alpha,c){
   eps=eps0
   while(!sufficient){
     eps=eps*alpha
-    propose_beta=beta-eps*direction
+    propose_beta=beta+eps*direction
     propose_og=omega(X,propose_beta)
     if(nllh(propose_og,y)<current_nllh-c*eps*crossprod(direction,direction))sufficient=TRUE
   }
@@ -50,10 +50,10 @@ gradientdecent_linesearch=function(X,y,beta0,eps0,ite,alpha,c){
   epshistory = rep(0,ite)
   for(i in 1:ite){
     og = omega(X,beta)
-    g=grad(og,y,X)
-    eps=backtrack(y,X,beta,og,g,eps,alpha,c)
+    direction=-grad(og,y,X)
+    eps=backtrack(X,y,beta,og,direction,eps0,alpha,c)
     epshistory[i]=eps
-    beta = beta-eps*g
+    beta = beta+eps*direction
     betahistory[,i] = beta
   }
   list(betahistory=betahistory,epshistory=epshistory)
@@ -62,40 +62,45 @@ gradientdecent_linesearch=function(X,y,beta0,eps0,ite,alpha,c){
 newtondirection=function(omega,y,X){
   w=omega*(1-omega)
   g=grad(omega,y,X)
-  return=as.vector(-solve(crossprod(X,X*w),g))
+  as.vector(-solve(crossprod(X,X*w),g))
 }
 
 # run newton direction
-newtonmethod=function(X,y,testX,testy,beta0,ite){
+newtonmethod=function(X,y,beta0,ite){
   beta=beta0
-  nllh=as.vector(matrix(nrow=ite))
-  tnllh=as.vector(matrix(nrow=ite))
+  betahistory = matrix(nrow = length(beta0),ncol = ite)
   for(i in 1:ite){
     og=omega(X,beta)
-    testog=omega(testX,beta)
-    nllh[i]=nllh(og,y)/length(y)
-    tnllh[i]=nllh(testog,testy)/length(testy)
     beta=beta+newtondirection(og,y,X)
+    betahistory[,i] = beta
   }
-  return=list(beta=beta,negloglikelihood=nllh,testnegloglikelihood=tnllh)
+  betahistory=betahistory
 }
 
-quasi_newtondirection=function(omega,y,X){
-  w=omega*(1-omega)
-  g=grad(omega,y,X)
-  return=as.vector(-solve(crossprod(X,X*w),g))
-}
-
-quasi_newtonmethod=function(X,y,beta0,ite){
-  beta=beta0
-  nllh=as.vector(matrix(nrow=ite))
-  tnllh=as.vector(matrix(nrow=ite))
+quasi_newtonmethod=function(X,y,beta0,eps0,ite,alpha,c){
+  beta = beta0
+  H = diag(1,nrow = length(beta0),ncol = length(beta0))
+  betahistory = matrix(nrow = length(beta0),ncol = ite)
   for(i in 1:ite){
-    og=omega(X,beta)
-    testog=omega(testX,beta)
-    nllh[i]=nllh(og,y)/length(y)
-    tnllh[i]=nllh(testog,testy)/length(testy)
-    beta=beta+newtondirection(og,y,X)
+    if(i==1){
+      og = omega(X,beta)
+      g = grad(og,y,X)
+    }
+    else{
+      og=ognew
+      g=gnew
+    }
+    direction=as.vector(-H%*%g)
+    eps=backtrack(X,y,beta,og,direction,eps0,alpha,c)
+    e = eps*direction
+    beta = beta+e
+    betahistory[,i] = beta
+    ognew = omega(X,beta)
+    gnew = grad(ognew,y,X)
+    if(crossprod(gnew,gnew)<1)break
+    t = gnew-g
+    Ht=H%*%t
+    H = H- tcrossprod(Ht,Ht)/as.numeric(crossprod(Ht,t)) + tcrossprod(e,e)/as.numeric(crossprod(t,e))
   }
-  return=list(beta=beta,negloglikelihood=nllh,testnegloglikelihood=tnllh)
+  list(betahistory=betahistory)
 }

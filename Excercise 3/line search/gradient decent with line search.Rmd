@@ -26,7 +26,7 @@ trainy=y[1:250]
 testX=X[251:569,]
 testy=y[251:569]
 ```
-black line is the likelihood for traning data, red for test data
+
 
 ```{r}
 ite=200
@@ -89,4 +89,43 @@ plot(fix_nllh,type='l',xlab='',ylab='negative loglikelihood')
 lines(bigc_nllh,col='blue')
 lines(smallc_nllh,col='purple')
 ```
+```{r}
+c=0.01
+ite=200
+result=quasi_newtonmethod(trainX,trainy,beta0,eps0,ite,alpha,c)
+test_negloglikelihood = rep(0,ite)
+train_negloglikelihood = rep(0,ite)
+for(i in 1 : ite){
+og = omega(testX,result$betahistory[,i])
+test_negloglikelihood[i] = nllh(og,testy)/length(testy)
+og = omega(trainX, result$betahistory[,i])
+train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
+}
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='quasi newton method')
+lines(test_negloglikelihood,col='red')
+qnm_nllh=train_negloglikelihood
+```
 
+```{r}
+ite=20
+result=newtonmethod(trainX,trainy,beta0,ite)
+test_negloglikelihood = rep(0,ite)
+train_negloglikelihood = rep(0,ite)
+for(i in 1 : ite){
+og = omega(testX,result[,i])
+test_negloglikelihood[i] = nllh(og,testy)/length(testy)
+og = omega(trainX, result[,i])
+train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
+}
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='newton method')
+lines(test_negloglikelihood,col='red')
+nm_nllh=train_negloglikelihood
+```
+
+```{r}
+plot(fix_nllh,type='l',xlab='',ylab='negative loglikelihood')
+lines(bigc_nllh,col='blue')
+lines(smallc_nllh,col='purple')
+lines(qnm_nllh,col='green')
+lines(nm_nllh,col='yellow')
+```
