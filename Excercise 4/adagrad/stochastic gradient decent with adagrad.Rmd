@@ -1,0 +1,93 @@
+---
+title: "Stochastic gradient decent"
+author: "Yinan Zhu"
+date: "September 27, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+library(readr)
+data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/wdbc.csv",col_names = FALSE)
+source('~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/gradient decent functions.R')
+```
+```{r}
+X=as.matrix(data[3:12])
+X=scale(X)
+X=cbind(X,1)
+y=as.vector(matrix(nrow=nrow(data),ncol=1))
+for(i in 1:nrow(data)){
+  if(data[i,2]=="M")y[i]=1
+  else y[i]=0
+}
+beta0=as.vector(matrix(0,nrow=11))
+
+trainX=X[1:250,]
+trainy=y[1:250]
+testX=X[251:569,]
+testy=y[251:569]
+```
+
+
+```{r}
+ite=1000
+```
+we use moving average with exponential decay to compute "averagenegloglikelihood": averageX(t)=X(t)*alpha+averageX(t-1)*(1-alpha)
+
+black line is the moving average of loglikelihood computed using exponential decay:averageX(t)=X(t)*alpha+averageX(t-1)*(1-alpha), red is the negative loglikelihood per data point on the test data
+
+```{r}
+eps=0.005
+result=sgd(trainX,trainy,beta0,eps,ite)
+test_negloglikelihood = rep(0,ite)
+train_negloglikelihood = rep(0,ite)
+for(i in 1 : ite){
+og = omega(testX,result[,i])
+test_negloglikelihood[i] = nllh(og,testy)/length(testy)
+og = omega(trainX, result[,i])
+train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
+}
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='gradient search eps=0.005')
+lines(test_negloglikelihood,col='red')
+smalleps_nllh=train_negloglikelihood
+```
+
+```{r}
+eps=0.02
+result=sgd(trainX,trainy,beta0,eps,ite)
+test_negloglikelihood = rep(0,ite)
+train_negloglikelihood = rep(0,ite)
+for(i in 1 : ite){
+og = omega(testX,result[,i])
+test_negloglikelihood[i] = nllh(og,testy)/length(testy)
+og = omega(trainX, result[,i])
+train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
+}
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='gradient search eps=0.02')
+lines(test_negloglikelihood,col='red')
+bigeps_nllh=train_negloglikelihood
+```
+```{r}
+eps=1
+result=sgd_adagrad(trainX,trainy,beta0,eps,ite)
+test_negloglikelihood = rep(0,ite)
+train_negloglikelihood = rep(0,ite)
+for(i in 1 : ite){
+og = omega(testX,result[,i])
+test_negloglikelihood[i] = nllh(og,testy)/length(testy)
+og = omega(trainX, result[,i])
+train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
+}
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='gradient search with ada_grad')
+lines(test_negloglikelihood,col='red')
+adagrad_nllh=train_negloglikelihood
+```
+
+```{r}
+plot(adagrad_nllh,type='l',ylab='negative loglikelihood',xlab='')
+lines(bigeps_nllh,col='blue')
+lines(smalleps_nllh,col='purple')
+```
+
+
