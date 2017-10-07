@@ -6,9 +6,16 @@ output:
   pdf_document: default
   html_document: default
 ---
+
+```{r}
+library(readr)
+library(Matrix)
+source('~/GitHub/SDS385-course-work/Excercise 4/alltogather/gradient decent functions.R')
+```
+
 ```{r}
 # Where are the files stored?
-base_dir = "~/Downloads/url_svmlight/"
+base_dir = "~/url_svmlight/"
 svm_files = dir(base_dir, pattern = "*.svm")
 
 # Loop through the files and create a list of objects
@@ -21,8 +28,16 @@ for(i in seq_along(svm_files)) {
 	X_list[[i]] = D$features
 	y_list[[i]] = D$labels
 }
-
-# Assemble one matrix of features/vector of responses (do.call very handy here, although not super efficient
+```
+```{r}
+X=new("dgCMatrix")
+for(i in 1:121){
+  print(i)
+  X=rBind(X,X_list[[i]])
+}
+```
+```{r}
+#Assemble one matrix of features/vector of responses (do.call very handy here, although not super efficient
 X = do.call(rBind, X_list)  # rBind, not rbind, for sparse matrices
 y = do.call(c, y_list)
 y = 0 + {y==1}
@@ -32,11 +47,6 @@ saveRDS(X, file='url_X.rds')
 saveRDS(y, file='url_y.rds')
 ```
 
-```{r}
-library(readr)
-data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/wdbc.csv",col_names = FALSE)
-source('~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/gradient decent functions.R')
-```
 ```{r}
 X=as.matrix(data[3:12])
 X=scale(X)

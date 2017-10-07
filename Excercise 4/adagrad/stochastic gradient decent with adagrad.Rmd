@@ -10,7 +10,7 @@ output:
 ```{r}
 library(readr)
 data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/wdbc.csv",col_names = FALSE)
-source('~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/gradient decent functions.R')
+source('~/GitHub/SDS385-course-work/Excercise 4/adagrad/gradient decent functions.R')
 ```
 ```{r}
 X=as.matrix(data[3:12])

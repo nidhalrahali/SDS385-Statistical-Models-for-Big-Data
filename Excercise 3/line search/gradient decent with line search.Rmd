@@ -10,7 +10,7 @@ output:
 ```{r}
 library(readr)
 data <- read_csv("~/GitHub/SDS385-course-work/Excercise 1/gradient decent/wdbc.csv",col_names = FALSE)
-source('~/GitHub/SDS385-course-work/Excercise 1/gradient decent/gradient decent functions.R')
+source('~/GitHub/SDS385-course-work/Excercise 3/linesearch/gradient decent functions.R')
 X=as.matrix(data[3:12])
 X=scale(X)
 X=cbind(X,1)
