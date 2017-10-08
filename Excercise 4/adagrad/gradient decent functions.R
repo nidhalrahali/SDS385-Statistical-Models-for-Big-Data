@@ -29,7 +29,7 @@ sgd=function(X,y,beta0,eps,ite){
 
 sgd_adagrad=function(X,y,beta0,eps,ite){
   beta=beta0
-  H=rep(0,length(beta))
+  H=rep(1,length(beta))
   betahistory=matrix(nrow=length(beta0),ncol=ite)
   for(i in 1:ite){
     r = sample(length(y),1)

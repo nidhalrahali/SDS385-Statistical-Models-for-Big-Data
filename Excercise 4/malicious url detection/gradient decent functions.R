@@ -47,17 +47,17 @@ nllh=function(omega,y){
   r
 }
 
-sgd_adagrad=function(X,y,beta0,eps,ite){
+sgd_adagrad=function(X,y,beta0,eps,ite,lambda){
   beta=beta0
-  H=rep(0,length(beta))
-  betahistory=matrix(nrow=length(beta0),ncol=ite)
+  H=rep(1,length(beta))
+  nllhhistory = rep(0,ite)
   for(i in 1:ite){
     r = sample(length(y),1)
     og = omega(X[r,],beta)
-    g=grad(og,y[r],X[r,])
+    nllhhistory[i]=nllh(og,y[r])
+    g=grad(og,y[r],X[r,],beta,lambda)
     H=H+g^2
     beta = beta-eps*g/sqrt(H)
-    betahistory[,i] = beta
   }
-  betahistory
+  list(beta,nllhhistory)
 }
