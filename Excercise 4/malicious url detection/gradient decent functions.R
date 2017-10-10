@@ -46,18 +46,3 @@ nllh=function(omega,y){
   }
   r
 }
-
-sgd_adagrad=function(rn,X,y,beta0,eps,ite,lambda){
-  beta=beta0
-  H=rep(1,length(beta))
-  nllhhistory = rep(0,ite)
-  for(i in 1:ite){
-    r = rn[i]
-    og = omega(X[r,],beta)
-    nllhhistory[i]=nllh(og,y[r])
-    g=grad(og,y[r],X[r,],beta,lambda)
-    H=H+g^2
-    beta = beta-eps*g/sqrt(H)
-  }
-  list(beta,nllhhistory)
-}
