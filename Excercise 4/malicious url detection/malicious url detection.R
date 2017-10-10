@@ -16,13 +16,20 @@ lambda = 1
 rn = sample(length(ytrain))
 epoch=1
 
-t1=microbenchmark( sgdC(rn, Xtrain ,ytrain,eps,ite,lambda),times=1L)
-result = sgdC(rn, Xtrain ,ytrain,eps,ite,lambda)
-plot(result[1:ite],type='l')
-beta = result[(ite+1):(ite+Xtrain@Dim[2])]
-ogtest = omega(Xtest,beta)
-nllh(ogtest,ytest)/length(ytest)
+t=microbenchmark(sgdC_sparse(rn,Xtrain,ytrain,eps,epoch,lambda),times=1L)
+result=sgdC_sparse(rn,Xtrain,ytrain,eps,epoch,lambda)
+plot(result[1:ncol(Xtrain)*epoch],type='l')
+beta=result[(ncol(Xtrain)*epoch+1):length(result)]
 
-t2=microbenchmark(sgdC_sparse(rn,Xtrain,ytrain,eps,ite,lambda),times=1L)
-result_sparse=sgdC_sparse(rn,Xtrain,ytrain,eps,epoch,lambda)
-plot(result_sparse[1:ncol(Xtrain)*epoch],type='l')
+#prediction
+og=omega(Xtest,beta)
+ypredict={og>0.5}
+dif=ypredict-ytest
+#true positive
+tp=sum({dif==0&&ypredit==1})/length(ytest)
+#true negative
+tp=sum({dif==0&&ypredit==0})/length(ytest)
+#false positive
+fp=sum({dif==1})/length(ytest)
+#false negative
+fn=sum({dif==-1})/length(ytest)
