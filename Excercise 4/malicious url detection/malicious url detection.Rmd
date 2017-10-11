@@ -1,0 +1,105 @@
+---
+title: "malicious url detection"
+author: "Yinan Zhu"
+date: "October 11, 2017"
+output: html_document
+---
+We use 496000 observations as training data and 480130 as test data
+```{r}
+library(readr)
+library(Matrix)
+library(microbenchmark)
+library(Rcpp)
+library(RcppEigen)
+Rcpp::sourceCpp('gradient_decent_functions.cpp')
+source('~/GitHub/SDS385-course-work/Excercise 4/malicious url detection/gradient decent functions.R')
+Xtest=readRDS('~/url_svmlight/url_Xtest.rds')
+ytest=readRDS('~/url_svmlight/url_ytest.rds')
+Xtrain=readRDS('~/url_svmlight/url_Xtrain.rds')
+Xtrain=t(Xtrain)
+ytrain=readRDS('~/url_svmlight/url_ytrain.rds')
+```
+
+generate samples
+```{r}
+rn = sample(length(ytrain))
+```
+
+first, a sgd without regularization
+```{r}
+epoch=1
+microbenchmark(sgdC(rn,Xtrain,ytrain,epoch),times=1L)
+```
+```{r}
+epoch=100
+result=sgdC(rn,Xtrain,ytrain,epoch)
+```
+```{r}
+nllh=result[1:epoch]
+plot(nllh,type='l',xlab='epoch',ylab='target function')
+```
+make prediction on the test data set
+
+```{r}
+beta=result[(epoch+1):length(result)]
+og=omega(Xtest,beta)
+ypredict=1*{og>0.5}
+dif=ypredict-ytest
+```
+
+true positive
+```{r}
+sum((1*{dif==0})*(1*{ypredict==1}))/length(ytest)
+```
+true negative
+```{r}
+sum((1*{dif==0})*(1*{ypredict==0}))/length(ytest)
+```
+false positive
+```{r}
+sum(1*{dif==1})/length(ytest)
+```
+
+false negative
+```{r}
+sum(1*{dif==-1})/length(ytest)
+```
+
+
+sgd with "lasso"
+```{r}
+epoch=1
+lambda=0.01
+microbenchmark(sgdC_lasso(rn,Xtrain,ytrain,epoch,lambda),times=1L)
+```
+```{r}
+epoch=100
+result_lasso=sgdC_lasso(rn,Xtrain,ytrain,epoch,lambda)
+```
+```{r}
+nllh_lasso=result_lasso[1:epoch]
+plot(nllh_lasso,type='l',xlab='epoch',ylab='target function')
+```
+```{r}
+beta=result_lasso[(epoch+1):length(result)]
+og=omega(Xtest,beta)
+ypredict=1*{og>0.5}
+dif=ypredict-ytest
+```
+true positive
+```{r}
+sum((1*{dif==0})*(1*{ypredict==1}))/length(ytest)
+```
+true negative
+```{r}
+sum((1*{dif==0})*(1*{ypredict==0}))/length(ytest)
+```
+false positive
+```{r}
+sum(1*{dif==1})/length(ytest)
+```
+
+false negative
+```{r}
+sum(1*{dif==-1})/length(ytest)
+```
