@@ -10,6 +10,7 @@ typedef NumericVector NV;
 typedef IntegerVector IV;
 typedef double db;
 typedef vector<int> vi;
+typedef vector<double> vdb;
 #define sz(a) int((a).size()) 
 #define lop(i,a,b) for (int i=a; i<=b; i++)
 #define vlop(i,v) lop(i,0,sz(v)-1)
@@ -18,7 +19,8 @@ typedef vector<int> vi;
 //[[Rcpp::export]]
 NV sgdC(NV rn, MSpMat X,NV y,db eps,int epoch,db lambda){
   int p=X.rows(),r,ite=X.cols()*epoch;
-  NV H(p,0.001),re(ite+p),beta(p);
+  NV re(ite+p);
+  vdb H(p,0.001),beta(p,0.001);
   vi nzbeta;
   db og,g;
   lop(i,0,ite-1){
