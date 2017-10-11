@@ -36,8 +36,8 @@ NV sgdC(NV rn, MSpMat X,NV y,db eps,int epoch,db lambda){
       beta[j]-=eps*g/sqrt(H[j]);
     }
     vlop(j,nzbeta){
-      if(beta[j]>0)beta[j]-=lambda;
-      else beta[j]+=lambda;
+      if(beta[nzbeta[j]]>0)beta[nzbeta[j]]-=lambda;
+      else beta[nzbeta[j]]+=lambda;
     }
   }
   lop(i,ite,ite+p-1)re[i]=beta[i-ite];       
