@@ -69,7 +69,7 @@ sum(1*{dif==-1})/length(ytest)
 sgd with "lasso"
 ```{r}
 epoch=1
-lambda=0.01
+lambda=0.000001
 microbenchmark(sgdC_lasso(rn,Xtrain,ytrain,epoch,lambda),times=1L)
 ```
 ```{r}
@@ -81,7 +81,7 @@ nllh_lasso=result_lasso[1:epoch]
 plot(nllh_lasso,type='l',xlab='epoch',ylab='target function')
 ```
 ```{r}
-beta=result_lasso[(epoch+1):length(result)]
+beta=result_lasso[(epoch+1):length(result_lasso)]
 og=omega(Xtest,beta)
 ypredict=1*{og>0.5}
 dif=ypredict-ytest
