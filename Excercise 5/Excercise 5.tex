@@ -1,0 +1,48 @@
+\documentclass{article}
+\begin{document}
+$\theta=0$, $S_\lambda(y)$ is undefined.
+
+Define
+\[
+S_{1\lambda}(y)=\textrm{arg min}_{\theta\geq0}\frac{1}{2}\theta^2-(y-\lambda)\theta
+\]
+
+\[
+S_{2\lambda}(y)=\textrm{arg min}_{\theta\leq0}\frac{1}{2}\theta^2-(y+\lambda)\theta
+\]
+
+Then $S_\lambda(y)$ is one of $S_{1\lambda}(y)$ and $S_{2\lambda}(y)$  which gives the smaller target function.
+Assuming $\lambda>0$. When $y>\lambda$,
+\[
+S_{1\lambda}(y)=y-\lambda
+\]
+\[
+S_{2\lambda}(y)=0
+\]
+\[
+\frac{1}{2}S_{1\lambda}(y)^2-(y-\lambda)S_{1\lambda}(y)-\frac{1}{2}S_{2\lambda}(y)^2+(y+\lambda)S_{2\lambda}(y)=-\frac{1}{2}(y-\lambda)^2
+\]
+So $S_{\lambda}(y)=y-\lambda$
+
+If $-\lambda<y<\lambda$
+\[
+S_{1\lambda}(y)=0
+\]
+\[
+S_{2\lambda}(y)=0
+\]
+
+So $S_{\lambda}(y)=0$
+
+If $y<\lambda$
+\[
+S_{1\lambda}(y)=0
+\]
+\[
+S_{2\lambda}(y)=y+\lambda
+\]
+\[
+\frac{1}{2}S_{1\lambda}(y)^2-(y-\lambda)S_{1\lambda}(y)-\frac{1}{2}S_{2\lambda}(y)^2+(y+\lambda)S_{2\lambda}(y)=\frac{1}{2}(y+\lambda)^2
+\]
+So $S_{\lambda}(y)=y+\lambda$
+\end{document}

@@ -1,0 +1,68 @@
+---
+title: "Sparsity"
+output: html_document
+---
+simulate data
+```{r}
+s=1000
+density=0.05
+theta=runif(s,min=-10,max=10)*rbinom(s,1,density)
+sigma = 1
+dat = rnorm(s,mean=theta,sd=sqrt(sigma))
+
+```
+
+Soft threshold
+```{r}
+par(mfrow=c(2,2))
+for(lambda in c(0.5,1,2.5,5)){
+  hard_theta={dat>lambda*sigma}*dat+{dat < -lambda*sigma}*dat
+  plot(x=theta,y=hard_theta,xlab="theta",ylab="estimate theta",col='red')
+}
+```
+
+Hard threshold
+```{r}
+par(mfrow=c(2,2))
+for(lambda in c(0.5,1,2.5,5)){
+  hard_theta={dat>lambda*sigma}*dat+{dat < -lambda*sigma}*dat
+  plot(x=theta,y=hard_theta,xlab="theta",ylab="estimate theta",col='red')
+}
+```
+
+```{r}
+density=0.05
+theta=runif(s,min=-10,max=10)*rbinom(s,1,density)
+dat = rnorm(s,mean=theta,sd=sqrt(sigma))
+sme=rep(0,0)
+for(lambda in seq(from=0.01,to=3,by=0.01)){
+  soft_theta={dat>lambda*sigma}*(dat-lambda)+{dat < -lambda*sigma}*(dat + lambda)
+  sme=c(sme,sum((soft_theta-theta)^2)/s)
+}
+plot(sme~seq(from=0.01,to=3,by=0.01),type='l',xlab='lambda')
+```
+
+```{r}
+density=0.1
+theta=runif(s,min=-10,max=10)*rbinom(s,1,density)
+dat = rnorm(s,mean=theta,sd=sqrt(sigma))
+sme=rep(0,0)
+for(lambda in seq(from=0.01,to=3,by=0.01)){
+  soft_theta={dat>lambda*sigma}*(dat-lambda)+{dat < -lambda*sigma}*(dat + lambda)
+  sme=c(sme,sum((soft_theta-theta)^2)/s)
+}
+plot(sme~seq(from=0.01,to=3,by=0.01),type='l',xlab='lambda')
+```
+
+```{r}
+density=0.2
+theta=runif(s,min=-10,max=10)*rbinom(s,1,density)
+dat = rnorm(s,mean=theta,sd=sqrt(sigma))
+sme=rep(0,0)
+for(lambda in seq(from=0.01,to=3,by=0.01)){
+  soft_theta={dat>lambda*sigma}*(dat-lambda)+{dat < -lambda*sigma}*(dat + lambda)
+  sme=c(sme,sum((soft_theta-theta)^2)/s)
+}
+plot(sme~seq(from=0.01,to=3,by=0.01),type='l',xlab='lambda')
+```
+
