@@ -74,33 +74,34 @@ db lazyupdate(db beta,int betaindex,vdb& H, vi& lastupdate, db lambda,int curren
 
 //[[Rcpp::export]]
 NV sgdC_lasso(NV rn, MSpMat X,NV y,int epoch,db lambda){
-  int p=X.rows(),r,ite=X.cols()*epoch;
+  int p=X.rows(),r,n=X.cols(),count=0;
   vdb H(p,0.001);
   NV ret(p+epoch),beta(p);
   vi lastupdate(p,0);
   db og,g;
-  lop(i,0,ite-1){
-    og=0;
-    r=rn[i%X.cols()];
-    for(InIterMat it(X,r); it;++it){
-      int j=it.row();
-      beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,i);
-      og-=it.value()*beta[j];
+  lop(e,0,epoch-1){
+    lop(i,0,n-1){
+      og=0;
+      r=rn[i];
+      for(InIterMat it(X,r); it;++it){
+        int j=it.row();
+        beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,count);
+        og-=it.value()*beta[j];
+      }
+      og=1/(exp(og)+1);
+      for(InIterMat it(X,r); it;++it){
+        int j=it.row();
+        g=(og-y[r])*it.value();
+        if(beta[j]>0)g+=lambda;
+        else if(beta[j]<0)g-=lambda;
+        H[j]+=g*g;
+        beta[j]-=g/sqrt(H[j]);
+        lastupdate[j]=count;
+      }
+      count++;
     }
-    og=1/(exp(og)+1);
-    for(InIterMat it(X,r); it;++it){
-      int j=it.row();
-      g=(og-y[r])*it.value();
-      if(beta[j]>0)g+=lambda;
-      else if(beta[j]<0)g-=lambda;
-      H[j]+=g*g;
-      beta[j]-=g/sqrt(H[j]);
-      lastupdate[j]=i;
-    }
-    if((i+1)%(X.cols())==0){
-      lop(j,0,p-1)beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,i+1);
-      ret[(i+1)/X.cols()-1]=targetfunction(X,y,beta,lambda);
-    }
+    lop(j,0,p-1)beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,count+1);
+    ret[e]=targetfunction(X,y,beta,lambda);
   }
   lop(i,0,p-1)ret[epoch+i]=beta[i];
   return ret;
