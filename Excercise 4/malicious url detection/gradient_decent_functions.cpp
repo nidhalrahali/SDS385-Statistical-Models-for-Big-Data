@@ -15,6 +15,9 @@ typedef vector<double> vdb;
 #define lop(i,a,b) for (int i=a; i<=b; i++)
 #define vlop(i,v) lop(i,0,sz(v)-1)
 #define pb push_back
+
+
+/*compute target function*/
 //[[Rcpp::export]]
 db targetfunction(MSpMat X, NV y, NV beta,db lambda){
   db ret=0;
@@ -31,6 +34,7 @@ db targetfunction(MSpMat X, NV y, NV beta,db lambda){
   return ret;
 }
 
+/*sgd without lasso*/
 //[[Rcpp::export]]
 NV sgdC(NV rn, MSpMat X,NV y,int epoch){
   int p=X.rows(),r,ite=X.cols()*epoch;
@@ -53,6 +57,7 @@ NV sgdC(NV rn, MSpMat X,NV y,int epoch){
   lop(i,0,p-1)ret[epoch+i]=beta[i];
   return ret;
 }
+
 //[[Rcpp::export]]
 db lazyupdate(db beta,int betaindex,vdb& H, vi& lastupdate, db lambda,int current){
   if(beta==0)return 0;
@@ -72,23 +77,28 @@ db lazyupdate(db beta,int betaindex,vdb& H, vi& lastupdate, db lambda,int curren
   return beta+change;
 }
 
+/*sgd with lasso*/
 //[[Rcpp::export]]
 NV sgdC_lasso(NV rn, MSpMat X,NV y,int epoch,db lambda){
   int p=X.rows(),r,n=X.cols(),count=0;
+  /*H: sum of square of gradient in each step*/
   vdb H(p,0.001);
   NV ret(p+epoch),beta(p);
+  /*record the last update time for each component*/
   vi lastupdate(p,0);
   db og,g;
   lop(e,0,epoch-1){
     lop(i,0,n-1){
       og=0;
       r=rn[i];
+      /*visit only nonzero member of X and compute the sigmoid function*/
       for(InIterMat it(X,r); it;++it){
         int j=it.row();
         beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,count);
         og-=it.value()*beta[j];
       }
       og=1/(exp(og)+1);
+      /*visit only nonzero member of X, and update beta*/
       for(InIterMat it(X,r); it;++it){
         int j=it.row();
         g=(og-y[r])*it.value();
@@ -100,6 +110,7 @@ NV sgdC_lasso(NV rn, MSpMat X,NV y,int epoch,db lambda){
       }
       count++;
     }
+    /*compute target function at the end of each epoch*/
     lop(j,0,p-1)beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,count+1);
     ret[e]=targetfunction(X,y,beta,lambda);
   }
