@@ -1,0 +1,61 @@
+---
+title: "Diabetes"
+author: "Yinan Zhu"
+date: "October 17, 2017"
+output: html_document
+---
+
+```{r}
+library(glmnet)
+X <- read.csv("~/GitHub/SDS385-course-work/Excercise 5/diabetes/diabetesX.csv", header=TRUE)
+Y = read.csv("~/GitHub/SDS385-course-work/Excercise 5/diabetes/diabetesY.csv", header=FALSE)
+X = as.matrix(X)
+Y = Y$V1
+```
+```{r}
+lam=c(seq(from=0.1,to=0.99,by=0.01),seq(from=1,to=50))
+```
+
+```{r}
+m = glmnet(X,Y,lambda=lam)
+```
+
+```{r}
+plot(m,xvar="lambda")
+```
+
+```{r}
+yhat=predict(m,newx=X)
+```
+
+```{r}
+plot(colMeans((Y-yhat)^2)~m$lambda,type='l')
+```
+```{r}
+sa = sample(length(Y))
+chunk = rbind(c(1,88),c(89,176),c(177,264),c(265,352),c(353,442))
+```
+
+```{r}
+mse=rep(0,length(lam))
+for(leftout in 1:5){
+  Xtest=X[chunk[leftout,1]:chunk[leftout,2],]
+  Ytest=Y[chunk[leftout,1]:chunk[leftout,2]]
+  Xtrain=matrix(nrow=0,ncol=ncol(X))
+  Ytrain=rep(0,0)
+  for(r in 1:5){
+    if(r!=leftout){
+      Xtrain=rbind(Xtrain,X[chunk[r,1]:chunk[r,2],])
+      Ytrain=c(Ytrain,Y[chunk[r,1]:chunk[r,2]])
+    }
+  }
+  m=glmnet(Xtrain,Ytrain,lambda=lam)
+  yhat=predict(m,newx=Xtest)
+  mse=mse+colMeans((yhat-Ytest)^2)
+}
+mse=mse/5
+```
+```{r}
+plot(mse~log(m$lambda),type='l')
+```
+
