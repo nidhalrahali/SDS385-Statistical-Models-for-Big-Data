@@ -1,7 +1,5 @@
 \documentclass{article}
 \begin{document}
-$\theta=0$, $S_\lambda(y)$ is undefined.
-
 Define
 \[
 S_{1\lambda}(y)=\textrm{arg min}_{\theta\geq0}\frac{1}{2}\theta^2-(y-\lambda)\theta
@@ -20,7 +18,7 @@ S_{1\lambda}(y)=y-\lambda
 S_{2\lambda}(y)=0
 \]
 \[
-\frac{1}{2}S_{1\lambda}(y)^2-(y-\lambda)S_{1\lambda}(y)-\frac{1}{2}S_{2\lambda}(y)^2+(y+\lambda)S_{2\lambda}(y)=-\frac{1}{2}(y-\lambda)^2
+\frac{1}{2}S_{1\lambda}(y)^2-(y-\lambda)S_{1\lambda}(y)-\frac{1}{2}S_{2\lambda}(y)^2+(y+\lambda)S_{2\lambda}(y)=-\frac{1}{2}(y-\lambda)^2<0
 \]
 So $S_{\lambda}(y)=y-\lambda$
 
@@ -42,7 +40,7 @@ S_{1\lambda}(y)=0
 S_{2\lambda}(y)=y+\lambda
 \]
 \[
-\frac{1}{2}S_{1\lambda}(y)^2-(y-\lambda)S_{1\lambda}(y)-\frac{1}{2}S_{2\lambda}(y)^2+(y+\lambda)S_{2\lambda}(y)=\frac{1}{2}(y+\lambda)^2
+\frac{1}{2}S_{1\lambda}(y)^2-(y-\lambda)S_{1\lambda}(y)-\frac{1}{2}S_{2\lambda}(y)^2+(y+\lambda)S_{2\lambda}(y)=\frac{1}{2}(y+\lambda)^2>0
 \]
 So $S_{\lambda}(y)=y+\lambda$
 \end{document}
