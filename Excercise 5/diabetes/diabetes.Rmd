@@ -11,6 +11,7 @@ X <- read.csv("~/GitHub/SDS385-course-work/Excercise 5/diabetes/diabetesX.csv", 
 Y = read.csv("~/GitHub/SDS385-course-work/Excercise 5/diabetes/diabetesY.csv", header=FALSE)
 X = as.matrix(X)
 Y = Y$V1
+n=length(Y)
 ```
 ```{r}
 lam=c(seq(from=0.1,to=0.99,by=0.01),seq(from=1,to=50))
@@ -39,14 +40,14 @@ chunk = rbind(c(1,88),c(89,176),c(177,264),c(265,352),c(353,442))
 ```{r}
 mse=rep(0,length(lam))
 for(leftout in 1:5){
-  Xtest=X[chunk[leftout,1]:chunk[leftout,2],]
-  Ytest=Y[chunk[leftout,1]:chunk[leftout,2]]
+  Xtest=X[sa[chunk[leftout,1]:chunk[leftout,2]],]
+  Ytest=Y[sa[chunk[leftout,1]:chunk[leftout,2]]]
   Xtrain=matrix(nrow=0,ncol=ncol(X))
   Ytrain=rep(0,0)
   for(r in 1:5){
     if(r!=leftout){
-      Xtrain=rbind(Xtrain,X[chunk[r,1]:chunk[r,2],])
-      Ytrain=c(Ytrain,Y[chunk[r,1]:chunk[r,2]])
+      Xtrain=rbind(Xtrain,X[sa[chunk[r,1]:chunk[r,2]],])
+      Ytrain=c(Ytrain,Y[sa[chunk[r,1]:chunk[r,2]]])
     }
   }
   m=glmnet(Xtrain,Ytrain,lambda=lam)
@@ -56,6 +57,11 @@ for(leftout in 1:5){
 mse=mse/5
 ```
 ```{r}
-plot(mse~log(m$lambda),type='l')
+plot(mse~log(m$lambda),type='l',xlab="log(lambda)",ylab="MSE")
+```
+```{r}
+m = glmnet(X,Y,lambda=lam)
+yhat=predict(m,newx=X)
+plot((1+2*m$df/(n-m$df))*colMeans((Y-yhat)^2)~log(m$lambda),type='l',ylab='C_p statistics',xlab='log(lambda)')
 ```
 
