@@ -1,5 +1,5 @@
 ---
-title: "Diabetes"
+title: "Proximal gradient descent"
 author: "Yinan Zhu"
 date: "October 17, 2017"
 output: html_document
@@ -13,16 +13,16 @@ X = as.matrix(X)
 X = scale(X)
 X=cbind(1,X)
 Y = Y$V1
-Y = scale(Y)
+Y = as.vector(scale(Y))
 n=length(Y)
 p=ncol(X)
 ```
 ```{r}
-lam=c(seq(from=0.1,to=0.99,by=0.01),seq(from=1,to=50))
+lam=seq(from=0.001,to=0.6,by=0.005)
 ```
 ```{r}
 beta0=rep(0,p)
-lambda=0.0001
+lambda=0.001
 gamma=0.1
 ite=200
 ```
@@ -32,11 +32,12 @@ result=prox_gd(X,Y,beta0,lambda,gamma,ite)
 plot(result$targetfunction,type='l')
 ```
 ```{r}
-tf=rep(0,0)
+mse=rep(0,0)
 for(lambda in lam){
   result=prox_gd(X,Y,beta0,lambda,gamma,ite)
-  tf=c(tf,target_function(X,Y,result$beta,0))
+  mse=c(mse,target_function(X,Y,result$beta,0))
 }
-plot(tf~log(lam),type='l')
+plot(mse~lam,type='l')
 ```
+
 

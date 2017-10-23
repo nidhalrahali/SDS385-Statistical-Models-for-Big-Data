@@ -12,11 +12,11 @@ Y = read.csv("~/GitHub/SDS385-course-work/Excercise 5/diabetes/diabetesY.csv", h
 X = as.matrix(X)
 Y = Y$V1
 X = scale(X)
-Y = scale(Y)
+Y = as.vector(scale(Y))
 n=length(Y)
 ```
 ```{r}
-lam=c(seq(from=0.1,to=0.99,by=0.01),seq(from=1,to=50))
+lam=seq(from=0.001,to=0.6,by=0.005)
 ```
 
 ```{r}
