@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage{enumerate}
+\begin{document}
+\begin{enumerate}[A]
+\item
+\[
+\textrm{prox }_\gamma f(x,x_0)=\textrm{arg min}_z\frac{1}{2\gamma}(z-x)^2+z^T\nabla f(x_0)=\textrm{arg min}_z\frac{1}{2\gamma}z^2-\frac{1}{\gamma}z^Tx+z^T\nabla f(x_0)=x-\gamma\nabla f(x_0)
+\]
+
+\item
+\begin{eqnarray}
+\textrm{prox}_{\frac{1}{\gamma}}l(x)&=&\textrm{arg min}_z\frac{\gamma}{2}(z-x)^2+\frac{1}{2}z^TPz-q^Tz\nonumber\\
+&=&\textrm{arg min}_z\frac{1}{2}z^T(P+I\gamma)z-q^Tz-\gamma x^Tz\nonumber\\
+&=&\textrm{arg min}_z \frac{1}{2}(z-(P+I\gamma)^{-1}(q+\gamma x))^T(P+I\lambda)(z-(P+I\gamma)^{-1}(q+\gamma x))\nonumber\\
+&=&(P+I\gamma)^{-1}(q+\gamma x)\nonumber
+\end{eqnarray}
+\[
+\textrm{negative loglikelihood}=\frac{1}{2}(y-Ax)^T\Omega^{-1}(y-Ax)=\frac{1}{2}y^T\Omega^{-1}y-x^TA^T\Omega^{-1}y+\frac{1}{2}x^TA^T\Omega^{-1}Ax
+\]
+\[
+P=\Omega^{-1}
+\]
+\[
+q=\Omega^{-1}Ax
+\]
+\[
+r=\frac{1}{2}x^TA^T\Omega^{-1}Ax
+\]
+\item
+\[
+\textrm{prox }_\gamma\phi(x)=\textrm{arg min}_z \frac{1}{2\gamma}(z-x)^2+\tau|z|=\textrm{arg min}_z \frac{1}{2}(z-x)^2+\tau\gamma|z|=S_{\tau\gamma}(x)
+\]
+\end{enumerate}
+\begin{enumerate}[A]
+\item
+\begin{eqnarray}
+&&\textrm{arg min}_x l(x,x_0)+\phi(x)\nonumber\\
+&=&\textrm{arg min}_x \frac{1}{2\gamma}(x-x_0)^2+x\nabla l(x_0)+\phi(x)\nonumber\\
+&=&\textrm{arg min}_x \frac{1}{2\gamma}(x-x_0+\gamma\nabla l(x_0))^2+\phi(x)\nonumber\\
+&=&\textrm{prox}_\gamma\phi(x_0-\gamma\nabla l(x_0))\nonumber
+\end{eqnarray}
+\item
+\[
+\nabla_\beta\frac{1}{2n}(y-X\beta)=\frac{1}{n}(X^TX\beta+X^Ty):=\Delta
+\]
+\begin{eqnarray}
+\beta_{t+1}&=&\textrm{arg min}_{\beta_t} \frac{1}{2n}(y-X\beta_t)^2+\lambda|\beta_t|\nonumber\\
+&=&\textrm{prox}_{\gamma}\lambda|\beta_t-\gamma\Delta|_{\beta_t}|\nonumber\\
+&=&S_{\lambda\gamma}(\beta_t-\gamma\Delta)
+\end{eqnarray}
+\end{enumerate}
+\end{document}

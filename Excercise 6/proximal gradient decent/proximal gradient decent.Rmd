@@ -1,0 +1,42 @@
+---
+title: "Diabetes"
+author: "Yinan Zhu"
+date: "October 17, 2017"
+output: html_document
+---
+
+```{r}
+source('~/GitHub/SDS385-course-work/Excercise 6/proximal gradient decent/functions.R')
+X <- read.csv("~/GitHub/SDS385-course-work/Excercise 6/proximal gradient decent/diabetesX.csv", header=TRUE)
+Y = read.csv("~/GitHub/SDS385-course-work/Excercise 6/proximal gradient decent/diabetesY.csv", header=FALSE)
+X = as.matrix(X)
+X = scale(X)
+X=cbind(1,X)
+Y = Y$V1
+Y = scale(Y)
+n=length(Y)
+p=ncol(X)
+```
+```{r}
+lam=c(seq(from=0.1,to=0.99,by=0.01),seq(from=1,to=50))
+```
+```{r}
+beta0=rep(0,p)
+lambda=0.0001
+gamma=0.1
+ite=200
+```
+
+```{r}
+result=prox_gd(X,Y,beta0,lambda,gamma,ite)
+plot(result$targetfunction,type='l')
+```
+```{r}
+tf=rep(0,0)
+for(lambda in lam){
+  result=prox_gd(X,Y,beta0,lambda,gamma,ite)
+  tf=c(tf,target_function(X,Y,result$beta,0))
+}
+plot(tf~log(lam),type='l')
+```
+

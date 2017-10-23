@@ -11,6 +11,8 @@ X <- read.csv("~/GitHub/SDS385-course-work/Excercise 5/diabetes/diabetesX.csv", 
 Y = read.csv("~/GitHub/SDS385-course-work/Excercise 5/diabetes/diabetesY.csv", header=FALSE)
 X = as.matrix(X)
 Y = Y$V1
+X = scale(X)
+Y = scale(Y)
 n=length(Y)
 ```
 ```{r}
