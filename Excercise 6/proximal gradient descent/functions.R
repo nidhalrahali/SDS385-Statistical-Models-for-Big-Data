@@ -1,10 +1,10 @@
 target_function=function(X,Y,beta,lambda){
-  mean((Y-X%*%beta)^2)+lambda*sum(abs(beta))
+  mean((Y-X%*%beta)^2)+lambda*sum(abs(beta[2:length(beta)]))
 }
 
 soft_threshold=function(y,lambda){
-  ret=rep(0,length(y))
-  for(i in 1:length(y)){
+  ret=as.vector(y)
+  for(i in 2:length(y)){
     ret[i] = sign(y[i])*max(c(0,abs(y[i])-lambda))
   }
   ret
