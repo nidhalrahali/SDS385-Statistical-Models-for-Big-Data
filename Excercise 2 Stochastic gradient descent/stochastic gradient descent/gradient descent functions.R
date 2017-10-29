@@ -18,7 +18,7 @@ nllh=function(omega,y){
 #run stochastic gradient decent on training data X y and test data testX,testY using with
 # iterations number=ite and step size=eps
 # evaluate the moving average of negative loglikelihood with exponential decay rate alpha
-stochasticgradientdecent=function(X,y,testX,testy,beta0,eps,ite,alpha){
+stochasticgradientdescent=function(X,y,testX,testy,beta0,eps,ite,alpha){
   beta=beta0
   nllh=as.vector(matrix(nrow=ite))
   tnllh=as.vector(matrix(nrow=ite))
@@ -40,7 +40,7 @@ stochasticgradientdecent=function(X,y,testX,testy,beta0,eps,ite,alpha){
 }
 #run stochastic gradient decent with vary steps, the steps are computed using Robbins Monro rule
 # step size at t=C/(t0+t)^decay
-varyingstepsgradientdecent=function(X,y,testX,testy,beta0,ite,alpha,decay,t0,C){
+varyingstepsgradientdescent=function(X,y,testX,testy,beta0,ite,alpha,decay,t0,C){
   beta=beta0
   nllh=as.vector(matrix(nrow=ite))
   tnllh=as.vector(matrix(nrow=ite))

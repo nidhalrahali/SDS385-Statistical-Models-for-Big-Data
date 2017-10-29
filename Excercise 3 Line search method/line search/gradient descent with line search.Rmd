@@ -1,16 +1,16 @@
 ---
-title: "gradient decent"
+title: "gradient descent"
 author: "Yinan Zhu"
 date: "September 27, 2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r}
 library(readr)
-data <- read_csv("~/GitHub/SDS385-course-work/Excercise 1/gradient decent/wdbc.csv",col_names = FALSE)
-source('~/GitHub/SDS385-course-work/Excercise 3/linesearch/gradient decent functions.R')
+data <- read_csv("~/GitHub/SDS385-course-work/Excercise 3 Line search method/line search/wdbc.csv",col_names = FALSE)
+source('~/GitHub/SDS385-course-work/Excercise 3 Line search method/line search/gradient descent functions.R')
 X=as.matrix(data[3:12])
 X=scale(X)
 X=cbind(X,1)
@@ -21,17 +21,17 @@ for(i in 1:nrow(data)){
 }
 beta0=as.vector(matrix(0,nrow=11))
 
-trainX=X[1:250,]
-trainy=y[1:250]
-testX=X[251:569,]
-testy=y[251:569]
+trainX=X[1:400,]
+trainy=y[1:400]
+testX=X[401:569,]
+testy=y[401:569]
 ```
 
-
+gradient descent with fixed step size, the funny bouncing behavior in the end is the result of a fixed step size
 ```{r}
 ite=200
 eps=0.05
-result=gradientdecent(trainX,trainy,beta0,eps,ite)
+result=gradientdescent(trainX,trainy,beta0,eps,ite)
 test_negloglikelihood = rep(0,ite)
 train_negloglikelihood = rep(0,ite)
 for(i in 1 : ite){
@@ -40,17 +40,20 @@ test_negloglikelihood[i] = nllh(og,testy)/length(testy)
 og = omega(trainX, result[,i])
 train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
 }
-plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='gradient search eps=0.05')
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='Iteration',sub='gradient search step size=0.05')
 lines(test_negloglikelihood,col='red')
+legend('topright',c('average training data','average test data'),lty=c(1,1),col=c('black','red'))
 fix_nllh=train_negloglikelihood
 ```
 
+
+gradient descent with line search, alpha is the rate we shrink the step size in back tracking, c is the coefficent in suffcient decrease condition, a bigger c means we require the target function decrease more in each iteration.
 ```{r}
 ite=200
 eps0=1
 alpha=0.9
 c=0.1
-result=gradientdecent_linesearch(trainX,trainy,beta0,eps0,ite,alpha,c)
+result=gradientdescent_linesearch(trainX,trainy,beta0,eps0,ite,alpha,c)
 test_negloglikelihood = rep(0,ite)
 train_negloglikelihood = rep(0,ite)
 for(i in 1 : ite){
@@ -59,16 +62,22 @@ test_negloglikelihood[i] = nllh(og,testy)/length(testy)
 og = omega(trainX, result$betahistory[,i])
 train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
 }
-plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='gradient search backtracking c=0.1')
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='iteration',sub='gradient search backtracking c=0.1')
 lines(test_negloglikelihood,col='red')
+legend('topright',c('average training data','average test data'),lty=c(1,1),col=c('black','red'))
 bigc_nllh=train_negloglikelihood
 ```
+
+
+The history of step size
 ```{r}
-plot(result$epshistory,type='l',xlab='',ylab='step size')
+plot(result$epshistory,type='l',xlab='iteration',ylab='step size',sub='history of step size')
 ```
+
+This is the same method for a smaller c
 ```{r}
 c=0.001
-result=gradientdecent_linesearch(trainX,trainy,beta0,eps0,ite,alpha,c)
+result=gradientdescent_linesearch(trainX,trainy,beta0,eps0,ite,alpha,c)
 test_negloglikelihood = rep(0,ite)
 train_negloglikelihood = rep(0,ite)
 for(i in 1 : ite){
@@ -77,21 +86,29 @@ test_negloglikelihood[i] = nllh(og,testy)/length(testy)
 og = omega(trainX, result$betahistory[,i])
 train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
 }
-plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='gradient search backtracking c=0.001')
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='iteration',sub='gradient search backtracking c=0.001')
 lines(test_negloglikelihood,col='red')
+legend('topright',c('average training data','average test data'),lty=c(1,1),col=c('black','red'))
 smallc_nllh=train_negloglikelihood
 ```
+
+
 ```{r}
-plot(result$epshistory,type='l',xlab='',ylab='step size')
+plot(result$epshistory,type='l',xlab='Iteration',ylab='step size',sub='history of step size')
 ```
+
+compare the three method above
 ```{r}
-plot(fix_nllh,type='l',xlab='',ylab='negative loglikelihood')
+plot(fix_nllh,type='l',xlab='iteration',ylab='negative loglikelihood,of training data')
 lines(bigc_nllh,col='blue')
 lines(smallc_nllh,col='purple')
+legend('topright',c('fixed step size','line search with c=0.1','line search with c=0.001'),lty=c(1,1),col=c('black','blue','purple'))
 ```
+
+quasi newton method, note that in each iteration it checked if the gradient is significant enough, if not it will break the loop. So you end up having less number of iteration than you expect it.
 ```{r}
 c=0.01
-ite=200
+ite=100
 result=quasi_newtonmethod(trainX,trainy,beta0,eps0,ite,alpha,c)
 test_negloglikelihood = rep(0,ite)
 train_negloglikelihood = rep(0,ite)
@@ -101,10 +118,13 @@ test_negloglikelihood[i] = nllh(og,testy)/length(testy)
 og = omega(trainX, result$betahistory[,i])
 train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
 }
-plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='quasi newton method')
+plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='iteration',sub='quasi newton method')
 lines(test_negloglikelihood,col='red')
+legend('topright',c('average training data','average test data'),lty=c(1,1),col=c('black','red'))
 qnm_nllh=train_negloglikelihood
 ```
+
+newton method is still the fastest (in terms of number of iterations)
 
 ```{r}
 ite=20
@@ -119,13 +139,17 @@ train_negloglikelihood[i] = nllh(og,trainy)/length(trainy)
 }
 plot(train_negloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='newton method')
 lines(test_negloglikelihood,col='red')
+legend('topright',c('average training data','average test data'),lty=c(1,1),col=c('black','red'))
 nm_nllh=train_negloglikelihood
 ```
 
+To summarize everything we have studied
+
 ```{r}
-plot(fix_nllh,type='l',xlab='',ylab='negative loglikelihood')
+plot(fix_nllh,type='l',xlab='iteration',ylab='negative loglikelihood of training data')
 lines(bigc_nllh,col='blue')
 lines(smallc_nllh,col='purple')
 lines(qnm_nllh,col='green')
 lines(nm_nllh,col='yellow')
+legend('topright',c('fixed step size','line search c=0.1','line search c=0.001','quasi newton','newton'),lty=c(1,1),col=c('black','blue','purple','green','yellow'))
 ```

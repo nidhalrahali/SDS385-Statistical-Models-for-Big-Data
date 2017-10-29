@@ -1,16 +1,16 @@
 ---
-title: "Stochastic gradient decent"
+title: "Stochastic gradient descent"
 author: "Yinan Zhu"
 date: "September 27, 2017"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r}
 library(readr)
-data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/wdbc.csv",col_names = FALSE)
-source('~/GitHub/SDS385-course-work/Excercise 2/stochastic gradient decent/gradient decent functions.R')
+data <- read_csv("~/GitHub/SDS385-course-work/Excercise 2 Stochastic gradient descent/stochastic gradient descent/wdbc.csv",col_names = FALSE)
+source('~/GitHub/SDS385-course-work/Excercise 2 Stochastic gradient descent/stochastic gradient descent/gradient descent functions.R')
 ```
 ```{r}
 X=as.matrix(data[3:12])
@@ -23,10 +23,10 @@ for(i in 1:nrow(data)){
 }
 beta0=as.vector(matrix(0,nrow=11))
 
-trainX=X[1:250,]
-trainy=y[1:250]
-testX=X[251:569,]
-testy=y[251:569]
+trainX=X[1:400,]
+trainy=y[1:400]
+testX=X[401:569,]
+testy=y[401:569]
 ```
 
 
@@ -39,28 +39,25 @@ we use moving average with exponential decay to compute "averagenegloglikelihood
 black line is the moving average of loglikelihood computed using exponential decay:averageX(t)=X(t)*alpha+averageX(t-1)*(1-alpha), red is the negative loglikelihood per data point on the test data
 ```{r}
 eps=0.001
-result=stochasticgradientdecent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
-plot(result$averagenegloglikelihood,type='l',xlab='',ylab='negative loglikelihood',sub='eps=0.001')
+result=stochasticgradientdescent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
+plot(result$averagenegloglikelihood,type='l',xlab='',ylab='negative loglikelihood',sub='step size=0.001')
 lines(result$testnegloglikelihoood,col='red')
+legend('topright',legend=c('training data (moving average)','test data'),lty=1,col=c('black','red'))
 ```
 
 ```{r}
 eps=0.005
-result=stochasticgradientdecent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
-plot(result$averagenegloglikelihood,type='l',xlab='',ylab='negative loglikelihood',sub='eps=0.005')
+result=stochasticgradientdescent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
+plot(result$averagenegloglikelihood,type='l',xlab='iteratiion',ylab='negative loglikelihood',sub='eps=0.005')
 lines(result$testnegloglikelihoood,col='red')
-```
-```{r}
-eps=0.01
-result=stochasticgradientdecent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
-plot(result$averagenegloglikelihood,type='l',xlab='',ylab='negative loglikelihood',sub='eps=0.01')
-lines(result$testnegloglikelihoood,col='red')
+legend('topright',legend=c('training data (moving average)','test data'),lty=1,col=c('black','red'))
 ```
 ```{r}
 eps=0.02
-result=stochasticgradientdecent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
+result=stochasticgradientdescent(trainX,trainy,testX,testy,beta0,eps,ite,alpha)
 plot(result$averagenegloglikelihood,type='l',xlab='',ylab='negative loglikelihood',sub='eps=0.02')
 lines(result$testnegloglikelihoood,col='red')
+legend('topright',legend=c('training data (moving average)','test data'),lty=1,col=c('black','red'))
 ```
 
 
@@ -72,21 +69,24 @@ C=0.5
 
 ```{r}
 decay=0.95
-result=varyingstepsgradientdecent(trainX,trainy,testX,testy,beta0,ite,alpha,decay,t0,C)
-plot(result$averagenegloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='decay=0.95')
+result=varyingstepsgradientdescent(trainX,trainy,testX,testy,beta0,ite,alpha,decay,t0,C)
+plot(result$averagenegloglikelihood,type='l',ylab='negative loglikelihood',xlab='iteration',sub='decay=0.95')
 lines(result$testnegloglikelihoood,col='red')
+legend('topright',legend=c('training data (moving average)','test data'),lty=1,col=c('black','red'))
 ```
 
 ```{r}
 decay=0.75
-result=varyingstepsgradientdecent(trainX,trainy,testX,testy,beta0,ite,alpha,decay,t0,C)
-plot(result$averagenegloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='decay=0.75')
+result=varyingstepsgradientdescent(trainX,trainy,testX,testy,beta0,ite,alpha,decay,t0,C)
+plot(result$averagenegloglikelihood,type='l',ylab='negative loglikelihood',xlab='iteration',sub='decay=0.75')
 lines(result$testnegloglikelihoood,col='red')
+legend('topright',legend=c('training data (moving average)','test data'),lty=1,col=c('black','red'))
 ```
 
 ```{r}
 decay=0.6
-result=varyingstepsgradientdecent(trainX,trainy,testX,testy,beta0,ite,alpha,decay,t0,C)
-plot(result$averagenegloglikelihood,type='l',ylab='negative loglikelihood',xlab='',sub='decay=0.6')
+result=varyingstepsgradientdescent(trainX,trainy,testX,testy,beta0,ite,alpha,decay,t0,C)
+plot(result$averagenegloglikelihood,type='l',ylab='negative loglikelihood',xlab='iteration',sub='decay=0.6')
 lines(result$testnegloglikelihoood,col='red')
+legend('topright',legend=c('training data (moving average)','test data'),lty=1,col=c('black','red'))
 ```

@@ -91,7 +91,7 @@ NV sgdC_lasso(NV rn, MSpMat X,NV y,int epoch,db lambda){
     lop(i,0,n-1){
       og=0;
       r=rn[i];
-      /*visit only nonzero member of X and compute the sigmoid function*/
+      /*visit only nonzero member of X and compute the sigmoid function, lazy update if neccessary*/
       for(InIterMat it(X,r); it;++it){
         int j=it.row();
         beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,count);
@@ -111,6 +111,7 @@ NV sgdC_lasso(NV rn, MSpMat X,NV y,int epoch,db lambda){
       count++;
     }
     /*compute target function at the end of each epoch*/
+	/*Note that you need to lazy update every elements before you compute target function*/
     lop(j,0,p-1)beta[j]=lazyupdate(beta[j],j,H,lastupdate,lambda,count+1);
     ret[e]=targetfunction(X,y,beta,lambda);
   }

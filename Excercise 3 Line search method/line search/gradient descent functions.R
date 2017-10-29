@@ -1,5 +1,5 @@
-# given observation X and beta, compute logistic function omega
 
+# given a step size eps0, shrink it by rate alpha until it satisfy the sufficient descent condition
 backtrack=function(X,y,beta,og,direction,eps0,alpha,c){
   current_nllh=nllh(og,y)
   sufficient=FALSE
@@ -12,7 +12,7 @@ backtrack=function(X,y,beta,og,direction,eps0,alpha,c){
   }
   eps
 }
-
+# given observation X and beta, compute logistic function omega
 omega=function(X,beta){
   as.vector(1/(exp(-X%*%beta)+1))
 }
@@ -33,7 +33,7 @@ nllh=function(omega,y){
   r
 }
 #run gradient decent with training data X y and test data testX testy,step size eps and iteration number ite
-gradientdecent=function(X,y,beta0,eps,ite){
+gradientdescent=function(X,y,beta0,eps,ite){
   betahistory=matrix(nrow=length(beta0),ncol=ite)
   beta=beta0
   for(i in 1:ite){
@@ -44,7 +44,8 @@ gradientdecent=function(X,y,beta0,eps,ite){
   betahistory
 }
 
-gradientdecent_linesearch=function(X,y,beta0,eps0,ite,alpha,c){
+# gradientdescent with back track line search
+gradientdescent_linesearch=function(X,y,beta0,eps0,ite,alpha,c){
   betahistory = matrix(nrow=length(beta0),ncol=ite)
   beta = beta0
   epshistory = rep(0,ite)
@@ -77,6 +78,7 @@ newtonmethod=function(X,y,beta0,ite){
   betahistory=betahistory
 }
 
+# gradient descent with quasi newton method
 quasi_newtonmethod=function(X,y,beta0,eps0,ite,alpha,c){
   beta = beta0
   H = diag(1,nrow = length(beta0),ncol = length(beta0))
