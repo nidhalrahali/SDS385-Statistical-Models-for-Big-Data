@@ -7,9 +7,9 @@ output: html_document
 
 ```{r}
 library(glmnet)
-source('~/GitHub/SDS385-course-work/Excercise 6/proximal gradient descent/functions.R')
-X <- read.csv("~/GitHub/SDS385-course-work/Excercise 6/proximal gradient descent/diabetesX.csv", header=TRUE)
-Y = read.csv("~/GitHub/SDS385-course-work/Excercise 6/proximal gradient descent/diabetesY.csv", header=FALSE)
+source('~/GitHub/SDS385-course-work/Excercise 6 Proximal gradient descent/proximal gradient descent/functions.R')
+X <- read.csv("~/GitHub/SDS385-course-work/Excercise 6 Proximal gradient descent/proximal gradient descent/diabetesX.csv", header=TRUE)
+Y = read.csv("~/GitHub/SDS385-course-work/Excercise 6 Proximal gradient descent/proximal gradient descent/diabetesY.csv", header=FALSE)
 X = as.matrix(X)
 X = scale(X)
 X=cbind(1,X)
@@ -25,12 +25,13 @@ lam=seq(from=0.001,to=0.6,by=0.005)
 beta0=rep(0,p)
 lambda=0.001
 gamma=0.1
-ite=200
+ite=400
 ```
 
 ```{r}
 result=prox_gd(X,Y,beta0,lambda,gamma,ite)
 plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
+convergence=result$targetfunction
 ```
 
 
@@ -60,4 +61,27 @@ plot(colMeans((Y-yhat)^2)~m$lambda,type='l',ylab='mse',xlab='lambda')
 plot.glmnet(m,xvar='lambda')
 ```
 
+```{r}
+lambda=0.001
+result=acc_prox_gd(X,Y,beta0,lambda,gamma,ite)
+plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
+lines(convergence,col='red')
+acc_convergence=result$targetfunction
+```
 
+```{r}
+s=2
+x=rep(0,0)
+for(i in 1:1000){
+  x=c(x,2*(s-1)/(1+sqrt(1+4*s^2)))
+  s=(1+sqrt(1+4*s^2))/2
+}
+plot(x,type='l')
+```
+```{r}
+result=lazy_acc_prox_gd(X,Y,beta0,lambda,gamma,ite,0.8)
+plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
+lines(convergence,col='red')
+lines(acc_convergence,col='blue')
+legend('topright',col=c('black','red','blue'),lty=1,legend=c('proximal','accelarated proximal','accelarated proximal with fixed momentum'))
+```
