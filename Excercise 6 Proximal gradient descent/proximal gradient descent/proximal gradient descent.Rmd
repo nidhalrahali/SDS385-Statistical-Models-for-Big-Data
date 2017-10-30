@@ -83,5 +83,5 @@ result=lazy_acc_prox_gd(X,Y,beta0,lambda,gamma,ite,0.8)
 plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
 lines(convergence,col='red')
 lines(acc_convergence,col='blue')
-legend('topright',col=c('black','red','blue'),lty=1,legend=c('proximal','accelarated proximal','accelarated proximal with fixed momentum'))
+legend('topright',col=c('red','black','blue'),lty=1,legend=c('proximal','accelarated proximal','accelarated proximal with fixed momentum'))
 ```
