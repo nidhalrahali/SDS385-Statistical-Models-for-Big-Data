@@ -1,0 +1,44 @@
+---
+title: "ADMM for lasso"
+author: "Yinan Zhu"
+date: "November 4, 2017"
+output: html_document
+---
+
+
+```{r}
+source('~/GitHub/SDS385-course-work/Excercise 7 Alternating direction method of multipliers/ADMM lasso/functions.R')
+X <- read.csv("~/GitHub/SDS385-course-work/Excercise 7 Alternating direction method of multipliers/ADMM lasso/diabetesX.csv", header=TRUE)
+Y = read.csv("~/GitHub/SDS385-course-work/Excercise 7 Alternating direction method of multipliers/ADMM lasso/diabetesY.csv", header=FALSE)
+X = as.matrix(X)
+X = scale(X)
+X=cbind(1,X)
+Y = Y$V1
+Y = as.vector(scale(Y))
+n=length(Y)
+p=ncol(X)
+```
+
+```{r}
+lambda=0.001
+gamma=0.1
+ite=40
+```
+
+```{r}
+result=admm_lasso(X,Y,lambda,gamma,ite)
+plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
+convergence1=result$targetfunction
+```
+```{r}
+result=acc_prox_gd(X,Y,lambda,gamma,ite)
+plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
+convergence2=result$targetfunction
+```
+
+```{r}
+plot(convergence1,type='l',xlab='iteration',ylab='targetfunction')
+legend('topright',legend=c('ADMM','accelarated proximal'),col=c('black','red'),lty=1)
+lines(convergence2,col='red')
+```
+
