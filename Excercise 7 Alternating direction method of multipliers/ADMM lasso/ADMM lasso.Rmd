@@ -22,23 +22,31 @@ p=ncol(X)
 ```{r}
 lambda=0.001
 gamma=0.1
-ite=40
+ite=100
 ```
 
 ```{r}
 result=admm_lasso(X,Y,lambda,gamma,ite)
 plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
 convergence1=result$targetfunction
+beta1=result$beta
 ```
 ```{r}
 result=acc_prox_gd(X,Y,lambda,gamma,ite)
 plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
 convergence2=result$targetfunction
+beta2=result$beta
 ```
 
 ```{r}
 plot(convergence1,type='l',xlab='iteration',ylab='targetfunction')
 legend('topright',legend=c('ADMM','accelarated proximal'),col=c('black','red'),lty=1)
 lines(convergence2,col='red')
+```
+
+```{r}
+plot(beta1,type='l',xlab='iteration',ylab='targetfunction')
+legend('topright',legend=c('ADMM','accelarated proximal'),col=c('black','red'),lty=1)
+lines(beta2,col='red')
 ```
 
