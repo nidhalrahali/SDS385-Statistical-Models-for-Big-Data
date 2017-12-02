@@ -1,0 +1,11 @@
+---
+title: "Laplacian smoothing"
+author: "Yinan Zhu"
+date: "December 1, 2017"
+output: html_document
+---
+
+
+```{r}
+
+```
