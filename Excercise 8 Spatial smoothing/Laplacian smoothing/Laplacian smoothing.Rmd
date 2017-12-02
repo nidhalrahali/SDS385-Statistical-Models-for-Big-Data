@@ -4,24 +4,82 @@ author: "Yinan Zhu"
 date: "December 1, 2017"
 output: html_document
 ---
-
+```{r}
+library(plotly)
+library(microbenchmark)
+```
 
 ```{r}
-grid <- read_csv("~/GitHub/SDS385-course-work/Excercise 8 Spatial smoothing/Laplacian smoothing/fmri_z.csv")
+grid <- read.csv("~/GitHub/SDS385-course-work/Excercise 8 Spatial smoothing/Laplacian smoothing/fmri_z.csv")
 grid=as.matrix(grid)
 source('~/GitHub/SDS385-course-work/Excercise 8 Spatial smoothing/Laplacian smoothing/functions.R')
+p1=plot_ly(z=grid,type='heatmap')
 ```
 
 ```{r}
 n=nrow(grid)
-lambda=10
-C=makeC_sparse(n,n,lambda)
-y=c(grid)
+y=as(c(grid),"CsparseMatrix")
 ```
 ```{r}
+lambda=0.1
+C=makeC_sparse(n,n,lambda)
 x = solve(C,y,sparse=TRUE)
-smoothed = matrix(data=x,nrow=n)
-heatmap(smoothed,Rowv=NA,Colv=NA)
+smoothed_grid = matrix(data=x,nrow=n)
+p2=plot_ly(z=smoothed_grid,type='heatmap')
+```
+```{r}
+lambda=1
+C=makeC_sparse(n,n,lambda)
+x = solve(C,y,sparse=TRUE)
+smoothed_grid = matrix(data=x,nrow=n)
+p3=plot_ly(z=smoothed_grid,type='heatmap')
+```
+```{r}
+lambda=10
+C=makeC_sparse(n,n,lambda)
+x = solve(C,y,sparse=TRUE)
+smoothed_grid = matrix(data=x,nrow=n)
+p4=plot_ly(z=smoothed_grid,type='heatmap')
+```
+```{r}
+p=subplot(p1,p2,p3,p4,nrows=2)
+p
+```
+```{r}
+lambda=1
+C=makeC_sparse(n,n,lambda)
+```
+```{r}
+result=gauss_seidel(C,y,50,targetfunction = TRUE)
+targetfunction=result[[2]]
+plot(targetfunction,type='l',col='blue')
+legend("topright",col=c('blue','red','black'),legend=c("Gauss Seidel","Jacobi","Direct solver"),lty=1)
+result=jacobi(C,y,50,targetfunction = TRUE)
+targetfunction=result[[2]]
+lines(targetfunction,col='red')
+x = solve(C,y,sparse=TRUE)
+direct_solver=target_function(C,y,x)[1,1]
+lines(rep(direct_solver,50),col='black')
 ```
 
 
+```{r}
+x=gauss_seidel(C,y,8)[[1]]
+smoothed = matrix(data=x,nrow=n)
+plot_ly(z=smoothed,type='heatmap')
+```
+```{r}
+x=jacobi(C,y,15)[[1]]
+smoothed = matrix(data=x,nrow=n)
+plot_ly(z=smoothed,type='heatmap')
+```
+
+```{r}
+microbenchmark(gauss_seidel(C,y,8),times=1)$time
+```
+```{r}
+microbenchmark(jacobi(C,y,15),times=1)$time
+```
+```{r}
+microbenchmark(solve(C,y,sparse=TRUE),times=1)$time
+```
