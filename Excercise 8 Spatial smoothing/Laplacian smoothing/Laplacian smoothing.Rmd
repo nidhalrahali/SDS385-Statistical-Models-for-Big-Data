@@ -7,5 +7,21 @@ output: html_document
 
 
 ```{r}
-
+grid <- read_csv("~/GitHub/SDS385-course-work/Excercise 8 Spatial smoothing/Laplacian smoothing/fmri_z.csv")
+grid=as.matrix(grid)
+source('~/GitHub/SDS385-course-work/Excercise 8 Spatial smoothing/Laplacian smoothing/functions.R')
 ```
+
+```{r}
+n=nrow(grid)
+lambda=10
+C=makeC_sparse(n,n,lambda)
+y=c(grid)
+```
+```{r}
+x = solve(C,y,sparse=TRUE)
+smoothed = matrix(data=x,nrow=n)
+heatmap(smoothed,Rowv=NA,Colv=NA)
+```
+
+

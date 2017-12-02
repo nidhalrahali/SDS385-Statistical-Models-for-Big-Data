@@ -2,8 +2,8 @@
 \begin{document}
 \begin{eqnarray}
 &&\textrm{arg min}_x \frac{1}{2}(y-x)^2+\frac{\lambda}{2}x^TD^TDx\nonumber\\
-&=&\textrm{arg min}_x \frac{1}{2}x^T(I\lambda+D^TD)x-x^Ty\nonumber\\
-&=&\textrm{arg min}_x\frac{1}{2}(x-(I\lambda+D^TD)^{-1}y)^T(I\lambda+D^TD)(x-(I\lambda+D^TD)^{-1}y)\nonumber\\
-&=&(I\lambda+D^TD)^{-1}y
+&=&\textrm{arg min}_x \frac{1}{2}x^T(I+D^TD\lambda)x-x^Ty\nonumber\\
+&=&\textrm{arg min}_x\frac{1}{2}(x-(I+D^TD\lambda)^{-1}y)^T(I+D^TD\lambda)(x-(I+D^TD\lambda)^{-1}y)\nonumber\\
+&=&(I+D^TD\lambda)^{-1}y
 \end{eqnarray}
 \end{document}
