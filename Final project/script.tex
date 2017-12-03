@@ -36,4 +36,22 @@ $|T|$ is the number of leaves of $T$ and $R_1, R_2,\cdots, R_m$ are the partitio
 
 For any $\alpha$, we can find $T_\alpha=\textrm{arg min }C(T)$ through weakest link pruning: That is we succesively close the node of $T_0$ which produces the smallest increase pernode increase in $C(T)-\alpha|T|$ until we are left with one node. It can be shown that this sequence contains $T_\alpha$.
 
+Suppose we want to fit a certain model on a training data. Bagging or bootstrap aggregation fits the model on a collection of bootstrap samples and average their prediction result. Bagging reduces the variance and maintain the same bias as a single model would have.
+
+Random forests is a modification of bagging that builds a large collection of de-correlated trees and average over them. The procedure can be described as:
+
+\begin{enumerate}
+\item
+Parameters: $B$, $N$, $n_{max}$, $m$
+\item
+For $b$ in $1\dots B$
+\begin{enumerate}
+\item
+Draw a bootstrap sample of size $N$ from the training data
+\item
+Grow a tree $T_b$ with node $n_{max}$ with standard procedure with one modification: each time we split the node, we randomly pick $m$ direction in feature space $\mathbb{R}^p$ and use them rather than using the whole feature space. 
+\end{enumerate}
+\item
+Make prediction by averaging over the result of all $T_b$
+\end{enumerate}
 \end{document}
