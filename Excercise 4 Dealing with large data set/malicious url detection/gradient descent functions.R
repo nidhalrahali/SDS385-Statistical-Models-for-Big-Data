@@ -29,20 +29,3 @@ read_svmlight_class = function(myfile, format='sparseMatrix', num_cols = NULL) {
   
   list(labels=label, features=m)
 }
-
-omega=function(X,beta){
-  as.vector(1/(exp(-X%*%beta)+1))
-}
-
-grad=function(omega,y,X,beta,lambda){
-  as.vector(crossprod(omega-y,X)+lambda*beta/(0.000001+abs(beta)))
-}
-
-nllh=function(omega,y){
-  r=0
-  for(i in 1:length(y)){
-    if(y[i]==1)r=r-log(omega[i])
-    else r=r-log(1-omega[i])
-  }
-  r
-}
