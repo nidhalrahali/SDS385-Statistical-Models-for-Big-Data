@@ -1,6 +1,6 @@
 library(readr)
 library(Matrix)
-source('~/GitHub/SDS385-course-work/Excercise 4/malicious url detection/gradient descent functions.R')
+source('~/GitHub/SDS385-course-work/Excercise 4/malicious url detection/gradient decent functions.R')
 
 # Where are the files stored?
 base_dir = "~/url_svmlight/"
