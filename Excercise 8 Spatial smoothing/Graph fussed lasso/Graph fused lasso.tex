@@ -1,0 +1,37 @@
+\documentclass{article}
+\begin{document}
+
+We want to solve the lasso problem
+\[
+\textrm{min}_x\frac{1}{2}|y-x|^2_2+\frac{\lambda}{2}|Dx|_1
+\]
+Written in ADMM form
+\[
+\textrm{min}_{x,z}\frac{1}{2}|y-x|^2_2+\frac{\lambda}{2}|z|_1
+\]
+\[
+\textrm{subject to } Dx=z 
+\]
+
+The augumented Lagrangian
+\[
+L_{\textrm{aug}}=\frac{1}{2}|y-x|^2_2+\frac{\lambda}{2}|z|_1+\frac{\rho}{2}(Dx-z)^2+\alpha^T(Dx-z)
+\]
+
+ADMM solution update
+\[
+v^k=z^k-u^k
+\]
+\[
+x^{k+1}=\textrm{arg min}_x \frac{1}{2}|x-y|_2^2+\frac{\rho}{2}|Dx-v^k|_2^2=x^{k+1}=(I+\rho D^TD)^{-1}(y+\rho D^Tv^k)
+\]
+\[
+w^k=Dx^{k+1}+u^k
+\]
+\[
+z^{k+1}=\textrm{arg min}_z\frac{\lambda}{2}|z|+\frac{\rho}{2}|z-w^k|_2^2= y^{k+1}=S_{\frac{\lambda}{2\rho}}(w^k)
+\]
+\[
+u^{k+1}=u^k+Dx^{k+1}-z^{k+1}
+\]
+\end{document}

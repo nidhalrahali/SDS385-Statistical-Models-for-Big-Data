@@ -9,33 +9,28 @@ We frame this question in ADMM way:
 \textrm{min}_{\beta,\alpha}\frac{1}{2n}(X\beta-y)^2+\lambda|\alpha|
 \]
 \[
-\textrm{under condition    } \beta-\alpha=0
+\textrm{subject to    } \beta-\alpha=0
 \]
-We write the augmented Lagrangian
+The augmented Lagrangian is
 \[
-\frac{1}{2n}(X\beta-y)^2+\lambda|\alpha|+y^T(\beta-\alpha)+\frac{\rho}{2}(\beta-\alpha)^2
+\frac{1}{2n}(X\beta-y)^2+\lambda|\alpha|+\gamma^T(\beta-\alpha)+\frac{\rho}{2}(\beta-\alpha)^2
 \]
 The algorithm follows
-\[
-\beta^{k+1}=\textrm{arg min}_\beta \frac{1}{2n}(X\beta-y)^2+\frac{\rho}{2}(\beta-v^k)^2
-\]
-\[
-\alpha^{k+1}=\textrm{arg min}_\alpha \lambda|\alpha|+\frac{\rho}{2}(\alpha-w^k)^2
-\]
-\[
-u^{k+1}=u^k+\beta^{k+1}-\alpha^{k+1}
-\]
 \[
 v^k=\alpha^k-u^k
 \]
 \[
-w^k=\beta^{k+1}+u^k
+\beta^{k+1}=\textrm{arg min}_\beta \frac{1}{2n}(X\beta-y)^2+\frac{\rho}{2}(\beta-v^k)^2=(\frac{1}{n}X^TX+\rho I)^{-1}(\frac{1}{n}X^Ty+\rho v^k)
 \]
-Update for both $\beta$ and $\alpha$ are solvable problems
 \[
-\beta^{k+1}=\textrm{arg min}_\beta \frac{1}{2n}(X\beta-y)^2+\frac{\rho}{2}(\beta+v^k)^2=(\frac{1}{n}X^TX+\rho I)^{-1}(\frac{1}{n}X^Ty+\rho v^k)
+w^k=\beta^{k+1}+u^k
 \]
 \[
 \alpha^{k+1}=\textrm{arg min}_\alpha \lambda|\alpha|+\frac{\rho}{2}(\alpha-w^k)^2=S_{\frac{\lambda}{\rho}}(w^k)
 \]
+\[
+u^{k+1}=u^k+\beta^{k+1}-\alpha^{k+1}
+\]
+
+
 \end{document}
