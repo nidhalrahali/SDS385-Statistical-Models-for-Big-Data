@@ -1,0 +1,44 @@
+---
+title: "Graph fussed lasso"
+author: "Yinan Zhu"
+date: "December 5, 2017"
+output: html_document
+---
+```{r}
+library(plotly)
+```
+
+```{r}
+grid <- read.csv("~/GitHub/SDS385-course-work/Excercise 8 Spatial smoothing/Laplacian smoothing/fmri_z.csv")
+grid=as.matrix(grid)
+source('~/GitHub/SDS385-course-work/Excercise 8 Spatial smoothing/graph fussed lasso/functions.R')
+p1=plot_ly(z=grid,type='heatmap')
+```
+
+```{r}
+dim=nrow(grid)
+y=as(c(grid),"CsparseMatrix")
+```
+```{r}
+lambda=1
+D=makeD_sparse(dim,dim)
+C=crossprod(D,D)*lambda+bandSparse(dim^2,k=0,diagonals=list(rep(1,dim^2)))
+x = solve(C,y,sparse=TRUE)
+smoothed_grid = matrix(data=x,nrow=dim)
+p2=plot_ly(z=smoothed_grid,type='heatmap')
+```
+```{r}
+ite=10
+rho=0.1
+result=admm_lasso(y,D,lambda,rho,ite)
+x=result$x
+smoothed_grid = matrix(data=x,nrow=dim)
+p3=plot_ly(z=smoothed_grid,type='heatmap')
+```
+```{r}
+p=subplot(p1,p2,p3,nrows=3)
+p
+```
+```{r}
+plot(result$targetfunction,type='l',xlab='iteration',ylab='target function')
+```
