@@ -1,7 +1,11 @@
 \documentclass{article}
 \usepackage{amsfonts}
+\title{A layman's introduction to random forest and gradient boost}
 \author{Yinan Zhu}
 \begin{document}
+\section{Introduction}
+In this essay we consider two models based on regression trees: gradient boost and random forest. We first describe how a single regression tree. Then we introduce two well-known ideas in machine learning, namely bootstrap+bagging and additive models and how they are combined with regression tree to give rise to random forrest and gradient boost respectively. At the end, we outlined the experiment on data we conducted, which will be presented in another file. This article serves as a very practical introduction to the two methods. We will focus on how they are ued in practice and be very book-keeping on the theory behind them.
+
 \section{Regression tree}
 Tree-based methods partition the feature space into a set of rectanggles and fit a simple model in each one. They are conceptually simple yet powerful tools.
 
@@ -33,7 +37,7 @@ Here $\bar{y}$ is the average of $y$ which belong to the region indicated by the
 
 In the case when cost function is the absolute error. $\bar{y}$ is replaced by the median of $y$ in the corresponding region.
 
-Obviously a tree can overfit the data. We introduce a one regularization method. The idea is to first grow a relativelly large tree using primitive method, then prune it. 
+Obviously a tree can overfit the data if we grow too many nodes. One regularization method is to first grow a relativelly large tree, then prune it. 
 
 We grow the tree until the number of nodes reach a fixed number. Call this tree $T_0$. Consider any subtree $T \subset T_0$ which can be realized by collapsing some of $T_0$'s nodes. Define cost function
 \[
@@ -62,6 +66,8 @@ Grow a tree $T_b$ with $J$ nodes with standard procedure on boostrapped data, wi
 \item
 Make prediction by $\frac{1}{B}\sum_{b=1}^BT_b(x)$
 \end{enumerate}
+
+We can see that due to the property of tree. Random forest has an additional layer of randomness in addition to booststrapped data set. That is we select different set of features as candidates each time we split the nodes.
 
 \section{Gradient boosting for regression tree}
 \subsection{Boosting for additive model}
@@ -100,8 +106,8 @@ As with any model, boosting needs to be regularized. Typical method includes res
 \[
 f\rightarrow f+\nu\rho_kT( ;\gamma_k)
 \]
-\subsection{Applying to trees}
-The general procedure of gradient boosting almost directly applies to the regression tree. Due to the piecewise constant nature of regression tree as a function, we see that picking the step size and picking the prediction for each region of tree actually overlap each other and therefore we can combine them togather. To specify, the whole procedure is
+\subsection{Applying to regression trees}
+The general procedure of gradient boosting almost directly applies to the regression tree. Due to the piecewise constant property of regression tree as a function, we see that picking the step size and picking the prediction for each region of tree actually overlap each other and therefore we can combine them togather. To specify, the whole procedure is
 \begin{enumerate}
 \item
 Parameters $M$, $J$, training data $y,x$
@@ -119,5 +125,34 @@ $T_k=\sum_{j=1}^Jc_jI(R_{jk})$
 \end{enumerate}
 \item
 Predict by $\sum_{i=1}^MT_i(x)$
+\end{enumerate}
+\section{Experiments on household appliances energy consumption data}
+We apply gradient boosting and random forest on the data "Appliances energy prediction" on UCI machine learning repository provided by Luis Candanedo from University of Mons. This data consists of the energy consumption by the appliances of a house in Stambruges, Belgium measured every 10 minutes from 1/11/2016 to 5/27/2016, along with time and weather data at the time of measurement.
+
+For more detail, the reader should refer to the .ipynb file in the directory. The outline of the experiments goes as follows:
+\begin{enumerate}
+\item
+Data introduction and introduction
+\item
+An analysis of impact of different parameters on the performance of models.
+\begin{enumerate}
+\item
+For gradient boost: shrinkage factor, maximum terminal nodes allowed in each tree, number of features selected for nodes splitting.
+\item
+For random forest: maximum terminal nodes allowed in each tree, number of features selected for nodes splitting
+\end{enumerate}
+\item
+Comparison and interpretation of results of two models at their best
+\item
+A combinational model by taking the weighted average of both models
+\end{enumerate}
+\section{Reference}
+\begin{enumerate}
+\item
+Greedy Function Approximation: A Gradient Boosting Machine, Jerome H. Friedman, IMS 1999 Reitz Lecture
+\item
+Data driven prediction models of energy use of appliances in a low-energy house, Luis M. Candanedo, Veronique Feldheim, Dominique Deramaix, Energy and Buildings 140 (2017) 81-97
+\item
+The Elements of Statistical Learning, Trevor Hastie, Robert Tibshirani, Jerome Friedman
 \end{enumerate}
 \end{document}
